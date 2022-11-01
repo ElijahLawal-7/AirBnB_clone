@@ -1,9 +1,6 @@
 #!/usr/bin/python3
-"""The file storage module"""
-
+"""Defines the FileStorage class."""
 import json
-import os
-import models
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -14,52 +11,39 @@ from models.review import Review
 
 
 class FileStorage:
-    """File storage module"""
+    """Represent an abstracted storage engine.
 
+    Attributes:
+        __file_path (str): The name of the file to save objects to.
+        __objects (dict): A dictionary of instantiated objects.
+    """
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """returns all objects"""
+        """Return the dictionary __objects."""
         return FileStorage.__objects
 
     def new(self, obj):
-        """sets a new obj"""
-        FileStorage.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
+        """Set in __objects obj with key <obj_class_name>.id"""
+        ocname = obj.__class__.__name__
+        FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
 
     def save(self):
-        """saves a new obj"""
-        objects = FileStorage.__objects
-        file = FileStorage.__file_path
-        content = {}
-
-        for key, value in objects.items():
-            content[key] = value.to_dict()
-
-        with open(file, 'w', encoding="utf-8") as f:
-            return f.write(json.dumps(content))
+        """Serialize __objects to the JSON file __file_path."""
+        odict = FileStorage.__objects
+        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
+        with open(FileStorage.__file_path, "w") as f:
+            json.dump(objdict, f)
 
     def reload(self):
-        """reloads from a json file"""
-
-        file = FileStorage.__file_path
-        # classes = models.classes
-
-        if os.path.isfile(file):
-            with open(file, 'r', encoding="utf-8") as f:
-                content = f.read()
-                formattedContent = json.loads(content)
-
-                for value in formattedContent.values():
-                    class_name = value["__class__"]
-                    # self.new(classes[class_name](**value))
-                    self.new(eval(class_name)(**value))
-
-    def update(self, key, attr, value):
-        """updates an instance"""
-        model = FileStorage.__objects[key]
-        setattr(model, attr, value)
-
-    def delete(self, key):
-        """deletes an instance"""
-        del FileStorage.__objects[key]
+        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        try:
+            with open(FileStorage.__file_path) as f:
+                objdict = json.load(f)
+                for o in objdict.values():
+                    cls_name = o["__class__"]
+                    del o["__class__"]
+                    self.new(eval(cls_name)(**o))
+        except FileNotFoundError:
+            return
