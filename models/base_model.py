@@ -1,32 +1,4 @@
-#!/usr/bin/python3
-"""The Base Model Class"""
-import uuid
-from datetime import datetime
-import models
-
-
-class BaseModel:
-    """The Base Model class"""
-
-    def __init__(self, *args, **kwargs):
-        """initializes a new base model.
-
-        Args:
-            *args (any): Unused.
-            **kwargs (dict): Key/value pairs of attributes.
-        """
-
-        if len(kwargs) != 0:
-            for key, value in kwargs.items():
-                if key == 'created_at' or key == 'updated_at':
-                    format = "%Y-%m-%dT%H:%M:%S.%f"
-                    value = datetime.strptime(value, format)
-                elif key == '__class__':
-                    continue
-                setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
+elf.created_at = datetime.now()
             self.updated_at = datetime.now()
             models.storage.new(self)
 
@@ -49,3 +21,4 @@ class BaseModel:
         """str method"""
         class_name = type(self).__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+
