@@ -80,6 +80,7 @@ $ git clone https://github.com/------/AirBnB_clone.git
 |[help](./console.py)| Prints information about specific command |
 |[quit/ EOF](./console.py)| Exit the program | <br> <br>
 
+<hr>
 
 # 0x00. AirBnB clone - The console
 
