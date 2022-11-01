@@ -78,7 +78,7 @@ $ git clone https://github.com/------/AirBnB_clone.git
 |[destroy](./console.py)| Deletes an instance based on the class name and id (save the change into the JSON file) |
 |[count](./console.py)| Retrieve the number of instances of a class |
 |[help](./console.py)| Prints information about specific command |
-|[quit/ EOF](./console.py)| Exit the program |
+|[quit/ EOF](./console.py)| Exit the program | <br> <br>
 
 
 # 0x00. AirBnB clone - The console
